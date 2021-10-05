@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>使用html5 FileReader獲取圖片並預覽，並非同步上傳到伺服器(not iframe)</title>
+    <img src="{{url_for('static', filename='1.jpg')}}">
+    <script type="text/javascript">
+        function imgPreview(fileDom) {
+            //判斷是否支援FileReader
+            if (window.FileReader) {
+                var reader = new FileReader();
+            } else {
+                alert("您的裝置不支援圖片預覽功能，如需該功能請升級您的裝置！");
+            }
+
+            //獲取檔案
+            var file = fileDom.files[0];
+            var imageType = /^image\//;
+            //是否是圖片
+            if (!imageType.test(file.type)) {
+                alert("請選擇圖片！");
+                return;
+            }
+            //讀取完成
+            reader.onload = function(e) {
+                //獲取圖片dom
+                var img = document.getElementById("preview");
+                //圖片路徑設定為讀取的圖片
+                img.src = e.target.result;
+
+                // ajax 上傳圖片  
+                $.post("uploa_h5.php", {
+                    img: e.target.result
+                }, function(ret) {
+                    if (ret.img != '') {
+                        alert('upload success');
+                        $('#showimg').html('<img src="' + ret.img + '">');
+                    } else {
+                        alert('upload fail');
+                    }
+                }, 'json');
+
+            };
+            reader.readAsDataURL(file);
+
+        }
+        /*function upload() {
+            var xhr = new XMLHttpRequest();
+            var progress = document.getElementById("progress");
+            progress.style.display = "block";
+
+            xhr.upload.addEventListener("progress", function(e) {
+                if (e.lengthComputable) {
+                    var percentage = Math.round((e.loaded * 100) / e.total);
+                    progress.value = percentage;
+                }
+            }, false);
+
+            xhr.upload.addEventListener("load", function(e){
+                  console.log("上傳完畢...")
+              }, false);
+
+            xhr.open("POST", "upload_h5.php");
+            xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert(xhr.responseText); // handle response.
+                    progress.style.display = "none";
+                    progress.value = 0;
+                }
+            };
+            var file = document.getElementById("imgFile");
+            var fd = new FormData();
+            fd.append(file.files[0].name, file.files[0]);
+            xhr.send(fd);
+        }*/
+    </script>
+</head>
+
+<body>
+    <img id="preview" />
+    <br />
+    <input type="file" name="file" id="imgFile" onchange="imgPreview(this)" />
+    <br/>
+    <!-- <input type="button" id="btnUpload" value="上傳" onclick="upload()" /><div id="progress" style="width:200px;height:24px;"></div> -->
+    <p id="showimg"></p>
+</body>
+<script type="text/javascript" src="../Public/js/jquery.min.js"></script>
+
+</html>

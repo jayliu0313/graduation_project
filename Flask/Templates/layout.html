@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+ <head>
+   <meta charset="utf-8">
+   <title>花現生活</title>
+   <link rel="stylesheet" href="{{ url_for('static',  filename='css/template.css') }}">
+ </head>
+ <body>
+    <header>
+      <div class="container">
+        <h1 class="logo">我的第一個Flask網站</h1>
+        <strong><nav>
+          <ul class="menu">
+            <li><a href="{{ url_for('home.html') }}">首頁</a></li>
+            <li><a href="{{ url_for('upload.html') }}">上傳</a></li>
+          </ul>
+        </nav></strong>
+      </div>
+    </header>
+    <img src="{{url_for('static', filename='1.jpg')}}">
+</body>
+
+</html>
