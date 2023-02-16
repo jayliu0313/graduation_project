@@ -1,1 +1,1 @@
-# IndependentStudy
+# Graduation Project
